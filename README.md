@@ -5,7 +5,7 @@ A thin Python wrapper around the Julia module CorrectMatch.jl, to estimate uniqu
 ## Installation
 
 Install first [Julia](http://julialang.org) and [CorrectMatch.jl](https://github.com/computationalprivacy/CorrectMatch.jl), then this Python wrapper:
-```pip install pycorrectmatch```
+```pip install correctmatch```
 
 We use [PyJulia](https://github.com/JuliaPy/pyjulia) to seemingly run Julia code from Python. Your Julia installation should be automatically detected, otherwise follow the instruction on the [PyJulia documentation](https://github.com/JuliaPy/pyjulia).
 

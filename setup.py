@@ -20,11 +20,11 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'CorrectMatch',
-    version = '0.1.0',
+    version = '0.1.1',
     url = 'https://github.com/computationalprivacy/pycorrectmatch',
     author = 'Luc Rocher',
     author_email = 'luc@rocher.lc',
     description = 'Python wrapper for the Julia package CorrectMatch.jl',
     packages = find_packages(),    
-    install_requires = ['numpy >= 1.15.0', 'julia >= 0.1.5'],
+    install_requires = ['numpy >= 1.15.0', 'julia >= 0.4.1'],
 )
