@@ -84,7 +84,7 @@ class TestGaussianCopulaModel:
     def sample_data(self) -> np.ndarray:
         """Create sample data for model testing."""
         rng = np.random.default_rng(42)
-        return rng.integers(1, 10, size=(100, 5))
+        return rng.integers(1, 10, size=(1000, 5))
 
     def test_fit_model(self, sample_data: np.ndarray) -> None:
         """Test that a model can be fitted to data."""
@@ -113,7 +113,7 @@ class TestIndividualMetrics:
     def model_and_individual(self) -> tuple:
         """Create a model and individual for testing."""
         rng = np.random.default_rng(42)
-        data = rng.integers(1, 10, size=(100, 5))
+        data = rng.integers(1, 10, size=(1000, 5))
         model = correctmatch.fit_model(data, exact_marginal=True)
         individual = data[0]
         return model, individual
