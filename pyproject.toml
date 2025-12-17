@@ -7,7 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "juliacall>=0.9.0",
     "numpy>=2.0",
-    "pandas>=2.3.3",
+    "pandas>=2.3.0",
 ]
 
 [project.urls]
@@ -15,8 +15,10 @@ homepage = "https://github.com/computationalprivacy/pycorrectmatch"
 
 [project.optional-dependencies]
 test = [
-    "pytest>=8.4.0",
-    "pytest-cov>=6.2.1",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "pytest-xdist>=3.8.0",
+    "pytest-lazy-fixtures>=1.4.0",
 ]
 
 [build-system]
@@ -28,3 +30,7 @@ build-backend = "hatchling.build"
 line-length = 120
 target-version = "py311"
 src = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
