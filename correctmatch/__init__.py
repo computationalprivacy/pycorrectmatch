@@ -16,40 +16,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from julia import Main
-jeval = Main.eval
+import numpy as np
+from juliacall import Main as jl  # noqa: N813
 
-def precompile():
-    """
-    Precompile and load the Julia package CorrectMatch.jl
-    """
-    jeval("using CorrectMatch; using CorrectMatch: Copula, Uniqueness, Individual")
+jl.seval("using CorrectMatch")
+cm = jl.CorrectMatch
 
 
-def uniqueness(arr):
-    """
-    Compute the fraction of unique individuals in a discrete multivariate
-    dataset.
-    """
-    return jeval("uniqueness")(arr)
+def uniqueness(arr: np.ndarray) -> float:
+    """Compute the fraction of unique individuals in a discrete multivariate dataset."""
+    return cm.uniqueness(arr)
 
 
-def fit_model(arr, exact_marginal=False):
-    """
-    Fit a Gaussian copula model to a discrete multivariate dataset
-    and return a Julia object with the estimated model.
-    """
-    return jeval("(x, y) -> fit_mle(GaussianCopula, x; exact_marginal=y)")(arr, exact_marginal)
+def correctness(arr: np.ndarray) -> float:
+    """Compute the fraction of correctly-identified individuals in a discrete multivariate dataset."""
+    return cm.correctness(arr)
 
 
-def sample_model(m, size):
-    """
-    Sample a synthetic dataset of `size` individuals from a given Gaussian
-    copula model.
-    """
-    return jeval("rand")(m, size)
+def fit_model(arr: np.ndarray, *, exact_marginal: bool = False):
+    """Fit a Gaussian copula model to a discrete multivariate dataset and return a Julia object with the estimated model."""
+    return cm.fit_mle(cm.GaussianCopula, arr, exact_marginal=exact_marginal)
 
 
-def individual_uniqueness(m, indiv, n):
-    """ Estimate individual uniqueness for one given record. """
-    return jeval("individual_uniqueness")(m, indiv, n)
+def sample_model(m, size: int) -> np.ndarray:
+    """Sample a synthetic dataset of `size` individuals from a given Gaussian copula model."""
+    return jl.rand(m, size)
+
+
+def individual_uniqueness(m, indiv: np.ndarray, n: int) -> float:
+    """Estimate individual uniqueness for one given record."""
+    return cm.individual_uniqueness(m, indiv, n)
+
+
+def individual_correctness(m, indiv: np.ndarray, n: int) -> float:
+    """Estimate individual correctness for one given record."""
+    return cm.individual_correctness(m, indiv, n)

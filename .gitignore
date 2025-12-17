@@ -1,0 +1,10 @@
+Manifest.toml
+.ipynb_checkpoints
+__pycache__
+*.egg-info
+build/
+dist/
+.CondaPkg/
+/jltest.*
+uv.lock
+docs/src/releasenotes.md
