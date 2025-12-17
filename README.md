@@ -53,6 +53,14 @@ array([[4, 2, 1, 4, 1],
 0.639
 ```
 
+CorrectMatch can also estimate uniquenesss and correctness from pandas' DataFrames:
+
+```python
+>>> import pandas as pd
+>>> df = pd.DataFrame(arr, columns=['A', 'B', 'C', 'D', 'E'])
+>>> correctmatch.uniqueness(df)
+0.371
+
 In the demo/ folder, we have compiled more examples with real-world datasets.
 
 ## License

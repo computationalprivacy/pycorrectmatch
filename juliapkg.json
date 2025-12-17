@@ -2,7 +2,11 @@
     "packages": {
         "CorrectMatch": {
             "uuid": "26fcc630-e5d3-11e9-1f2e-33567d4860bc",
-            "version": "1.3.2"
+            "url": "https://github.com/computationalprivacy/CorrectMatch.jl.git",
+            "rev": "f2dc4641c32614e1f0ab6bf67e7d33cdb9edcff6"
+        },
+        "DataFrames": {
+            "uuid": "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
         }
     }
 }
