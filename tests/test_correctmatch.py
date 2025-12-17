@@ -2,6 +2,7 @@
 
 import correctmatch
 import numpy as np
+import pandas as pd
 import pytest
 
 
@@ -139,3 +140,73 @@ class TestDataFrameMetrics:
         df = dataframe_factory(data_type)
         result = metric_fn(df)
         assert 0.0 <= result <= 1.0
+
+
+class TestSeriesToVector:
+    """Test _series_to_vector helper function preserves correct types for Julia."""
+
+    def test_numpy_array_passthrough(self) -> None:
+        """Numpy arrays should be returned unchanged."""
+        arr = np.array([1, 2, 3], dtype=np.int64)
+        result = correctmatch._series_to_vector(arr)
+        assert result is arr  # Same object, not a copy
+
+    def test_integer_series_returns_numpy_array(self) -> None:
+        """Integer Series should return numpy array to preserve Int64 type in Julia."""
+        series = pd.Series([1, 2, 3], dtype=np.int64)
+        result = correctmatch._series_to_vector(series)
+        assert isinstance(result, np.ndarray)
+        assert result.dtype == np.int64
+
+    def test_float_series_returns_numpy_array(self) -> None:
+        """Float Series should return numpy array to preserve Float64 type in Julia."""
+        series = pd.Series([1.0, 2.0, 3.0], dtype=np.float64)
+        result = correctmatch._series_to_vector(series)
+        assert isinstance(result, np.ndarray)
+        assert result.dtype == np.float64
+
+    def test_categorical_series_returns_list(self) -> None:
+        """Categorical Series should return list with string values."""
+        series = pd.Series(pd.Categorical(["a", "b", "c"]))
+        result = correctmatch._series_to_vector(series)
+        assert isinstance(result, list)
+        assert result == ["a", "b", "c"]
+
+    def test_string_series_returns_list(self) -> None:
+        """String (object) Series should return list."""
+        series = pd.Series(["a", "b", "c"], dtype=object)
+        result = correctmatch._series_to_vector(series)
+        assert isinstance(result, list)
+        assert result == ["a", "b", "c"]
+
+    def test_mixed_dtype_series_returns_list(self) -> None:
+        """Mixed dtype Series (object) should return list."""
+        # This happens when extracting a row from a DataFrame with mixed column types
+        df = pd.DataFrame({"a": [1], "b": ["x"]})
+        series = df.iloc[0]  # dtype=object due to mixed types
+        result = correctmatch._series_to_vector(series)
+        assert isinstance(result, list)
+
+    def test_integer_series_values_preserved(self) -> None:
+        """Integer values should be preserved exactly."""
+        series = pd.Series([10, 20, 30], dtype=np.int64)
+        result = correctmatch._series_to_vector(series)
+        np.testing.assert_array_equal(result, [10, 20, 30])
+
+    def test_julia_receives_correct_type_for_integers(self) -> None:
+        """Verify Julia receives Int64 (not Any) for integer Series."""
+        from juliacall import Main as jl
+
+        series = pd.Series([1, 2, 3], dtype=np.int64)
+        converted = correctmatch._series_to_vector(series)
+        julia_eltype = str(jl.seval("eltype")(converted))
+        assert "Int64" in julia_eltype, f"Expected Int64, got {julia_eltype}"
+
+    def test_julia_receives_correct_type_for_floats(self) -> None:
+        """Verify Julia receives Float64 (not Any) for float Series."""
+        from juliacall import Main as jl
+
+        series = pd.Series([1.0, 2.0, 3.0], dtype=np.float64)
+        converted = correctmatch._series_to_vector(series)
+        julia_eltype = str(jl.seval("eltype")(converted))
+        assert "Float64" in julia_eltype, f"Expected Float64, got {julia_eltype}"

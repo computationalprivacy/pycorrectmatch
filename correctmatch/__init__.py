@@ -91,8 +91,13 @@ def sample_model(m, size: int) -> np.ndarray | pd.DataFrame:
 
 
 def _series_to_vector(indiv: np.ndarray | pd.Series) -> list | np.ndarray:
-    """Convert a pandas Series to a Julia vector, preserving original values."""
+    """Convert a pandas Series to a format suitable for Julia."""
     if isinstance(indiv, pd.Series):
+        # Check if the Series contains only numeric data
+        if pd.api.types.is_numeric_dtype(indiv.dtype):
+            # Return numpy array to preserve integer/float type in Julia
+            return indiv.to_numpy()
+        # For categorical or string data, convert to list
         return list(indiv.values)
     return indiv
 
