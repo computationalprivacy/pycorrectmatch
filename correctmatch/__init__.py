@@ -33,9 +33,21 @@ def correctness(arr: np.ndarray) -> float:
     return cm.correctness(arr)
 
 
-def fit_model(arr: np.ndarray, *, exact_marginal: bool = False):
+def fit_model(
+    arr: np.ndarray,
+    *,
+    exact_marginal: bool = False,
+    adaptative_threshold: int = 100,
+    mi_abs_tol: float = 1e-5,
+):
     """Fit a Gaussian copula model to a discrete multivariate dataset and return a Julia object with the estimated model."""
-    return cm.fit_mle(cm.GaussianCopula, arr, exact_marginal=exact_marginal)
+    return cm.fit_mle(
+        cm.GaussianCopula,
+        arr,
+        exact_marginal=exact_marginal,
+        adaptative_threshold=adaptative_threshold,
+        mi_abs_tol=mi_abs_tol,
+    )
 
 
 def sample_model(m, size: int) -> np.ndarray:
