@@ -48,33 +48,25 @@ class TestUniqueness:
 
 
 class TestCorrectness:
-    """Test the correctness function.
+    """Test the correctness function."""
 
-    Note: The correctness function is defined in the Python wrapper but
-    not currently exported by the Julia CorrectMatch package.
-    These tests are skipped until the Julia package adds this functionality.
-    """
-
-    @pytest.mark.skip(reason="correctness not available in CorrectMatch.jl")
     def test_correctness_all_unique(self) -> None:
         """Test correctness with a dataset where all rows are unique."""
         arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         result = correctmatch.correctness(arr)
         assert result == 1.0
 
-    @pytest.mark.skip(reason="correctness not available in CorrectMatch.jl")
     def test_correctness_with_duplicates(self) -> None:
         """Test correctness with a dataset containing duplicates."""
         arr = np.array([[1, 2, 3], [1, 2, 3], [4, 5, 6]])
         result = correctmatch.correctness(arr)
-        assert 0.0 <= result <= 1.0
+        assert result == (1/2 * 2 + 1) / 3
 
-    @pytest.mark.skip(reason="correctness not available in CorrectMatch.jl")
     def test_correctness_all_same(self) -> None:
         """Test correctness with a dataset where all rows are identical."""
         arr = np.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
         result = correctmatch.correctness(arr)
-        assert result == 0.0
+        assert result == 1/3
 
 
 class TestGaussianCopulaModel:
@@ -101,9 +93,7 @@ class TestGaussianCopulaModel:
         model = correctmatch.fit_model(sample_data)
         samples = correctmatch.sample_model(model, 50)
         assert samples is not None
-        # samples shape is (n_samples, n_features)
-        assert samples.shape[0] == 50
-        assert samples.shape[1] == sample_data.shape[1]
+        assert samples.shape == (50, sample_data.shape[1])
 
 
 class TestIndividualMetrics:
@@ -124,7 +114,6 @@ class TestIndividualMetrics:
         result = correctmatch.individual_uniqueness(model, individual, 1000)
         assert 0.0 <= result <= 1.0
 
-    @pytest.mark.skip(reason="individual_correctness not available in CorrectMatch.jl")
     def test_individual_correctness(self, model_and_individual: tuple) -> None:
         """Test individual correctness estimation."""
         model, individual = model_and_individual
